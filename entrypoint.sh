@@ -19,13 +19,13 @@ name=$(echo $reponame | cut -f 1 -d '.')
 
 git clone "$repo" "$localroot/$name"
 
-echo Waiting for cassandra ($CASSANDRA) on port $CASSANDRA_PORT to become available
+# echo Waiting for cassandra ($CASSANDRA) on port $CASSANDRA_PORT to become available
 
-while ! nc -z $CASSANDRA $CASSANDRA_PORT; do sleep 2; done
+# while ! nc -z $CASSANDRA $CASSANDRA_PORT; do sleep 2; done
 
-echo Cassandra is available, not waiting for Cassandra to accept client connections
+# echo Cassandra is available, not waiting for Cassandra to accept client connections
 
-sleep 10
+# sleep 10
 
 echo Executing: cqlsh --file="$localroot/$name/db/cassandra_fixtures.sql"
 
