@@ -10,6 +10,7 @@ set -e
 repo="https://github.com/cihatgenc/cassandra_fixtures.git"
 localroot="/usr/local/bin"
 
+echo Using the following environment variable: $GITREPO, $CASSANDRA, $CASSANDRA_PORT
 reponame="${repo##*/}"
 
 echo Git repo to clone is $reponame
@@ -17,6 +18,14 @@ echo Git repo to clone is $reponame
 name=$(echo $reponame | cut -f 1 -d '.')
 
 git clone "$repo" "$localroot/$name"
+
+echo Waiting for cassandra to become available
+
+while ! nc -z $CASSANDRA $CASSANDRA_PORT; do sleep 2; done
+
+echo Cassandra is available, not waiting for Cassandra to accept client connections
+
+sleep 10
 
 echo Executing: cqlsh --file="$localroot/$name/db/cassandra_fixtures.sql"
 
