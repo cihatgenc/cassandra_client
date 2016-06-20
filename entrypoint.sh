@@ -10,25 +10,35 @@ set -e
 repo=$GITREPO
 localroot="/usr/local/bin"
 
-echo Using the following environment variable: $GITREPO, $CASSANDRA, $CASSANDRA_PORT
 reponame="${repo##*/}"
-
-echo Git repo to clone is $reponame
 
 name=$(echo $reponame | cut -f 1 -d '.')
 
 git clone "$repo" "$localroot/$name"
 
-echo Waiting for cassandra $CASSANDRA on port $CASSANDRA_PORT to become available
+echo "Waiting for cassandra $CASSANDRA on port $CASSANDRA_PORT to become available"
 
 while ! nc -z $CASSANDRA $CASSANDRA_PORT; do sleep 2; done
 
-echo Cassandra is available, now waiting for Cassandra to accept client connections
+echo "Cassandra is available, now waiting for Cassandra to accept client connections"
 
-sleep 10
+sleep 5
 
-echo Executing: cqlsh --file="$localroot/$name/db/cassandra_fixtures.sql"
+#FILES=$localroot/$name/db/$ACTION/*
 
-exec cqlsh $CASSANDRA $CASSANDRA_PORT --file="$localroot/$name/db/cassandra_fixtures.sql"
+echo "Found the following files"
+ls $localroot/$name/db/$ACTION/*.sql | sort -V
+ping -c 1 mycassandra
+ping -c 1 $CASSANDRA
 
-$0
+$(
+for f in `ls $localroot/$name/db/$ACTION/*.sql | sort -V`
+do
+  echo "Executing: cqlsh $CASSANDRA $CASSANDRA_PORT --file=$f";
+  bash -c "cqlsh mycassandra 9042 --file=$f"
+done
+) &>/dev/null
+
+#echo Executing: cqlsh --file="$localroot/$name/db/$ACTION/0001-cassandra_fixtures.sql"
+
+#exec cqlsh $CASSANDRA $CASSANDRA_PORT --file="$localroot/$name/db/cassandra_fixtures.sql"
