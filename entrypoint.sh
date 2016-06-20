@@ -19,7 +19,7 @@ name=$(echo $reponame | cut -f 1 -d '.')
 
 git clone "$repo" "$localroot/$name"
 
-echo Waiting for cassandra to become available
+echo Waiting for cassandra ($CASSANDRA) on port $CASSANDRA_PORT to become available
 
 while ! nc -z $CASSANDRA $CASSANDRA_PORT; do sleep 2; done
 
