@@ -40,6 +40,6 @@ do
   echo "Executing: cqlsh $CASSANDRA_HOST $CASSANDRA_PORT --file=$f";
   bash -c "cqlsh $CASSANDRA_HOST $CASSANDRA_PORT --file=$f"
 done
-) &>/dev/null
+)
 
 
