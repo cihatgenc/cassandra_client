@@ -34,12 +34,10 @@ if [ "$ACTION" = "fixtures" ]
 	sleep 10
 fi
 
-$(
 for f in `ls $localroot/$name/db/$ACTION/*.cql | sort -V`
 do
   echo "Executing: cqlsh $CASSANDRA_HOST $CASSANDRA_PORT --file=$f";
   bash -c "cqlsh $CASSANDRA_HOST $CASSANDRA_PORT --file=$f"
-done
-)
+done 
 
 
